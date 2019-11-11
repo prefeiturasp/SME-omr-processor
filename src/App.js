@@ -141,7 +141,7 @@ function run() {
                         process.exit(1);
                     });
                 } else if (!examList.length) {
-                    Aggregation.data.processStatus = Enumerator.ProcessStatus.PENDING;
+                    Aggregation.data.processStatus = Enumerator.ProcessStatus.FINISHED;
                     updateAggregation(false);
                 } else {
                     examProcessor(examList);

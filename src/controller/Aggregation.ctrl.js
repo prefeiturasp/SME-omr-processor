@@ -46,7 +46,12 @@ class AggregationController {
                 where = {};
             } else {
                 where = {
-                    processStatus: Enumerator.ProcessStatus.PENDING
+                    processStatus: {
+                        $in: [
+                            Enumerator.ProcessStatus.PENDING,
+                            Enumerator.ProcessStatus.PROCESSING
+                        ]
+                    }
                 };
             }
 
@@ -58,7 +63,11 @@ class AggregationController {
                 (error, data) => {
                     if (error) return callback(error);
                     if (data.length == 0) return callback();
-
+                    else if (data[0].processStatus == Enumerator.ProcessStatus.PROCESSING) {
+                        AggregationController.data = data[0];
+                        return callback(null, data[0]);
+                    }
+                    
                     data[0].processStatus = Enumerator.ProcessStatus.PROCESSING;
                     AggregationController.data = data[0];
 
@@ -113,11 +122,13 @@ class AggregationController {
     static getExamsDone(callback) {
         const exam = new ExamBO();
         var where = {
-            processStatus: {$in: [
-                Enumerator.ProcessStatus.SUCCESS,
-                Enumerator.ProcessStatus.ERROR,
-                Enumerator.ProcessStatus.WARNING
-            ]}
+            processStatus: {
+                $in: [
+                    Enumerator.ProcessStatus.SUCCESS,
+                    Enumerator.ProcessStatus.ERROR,
+                    Enumerator.ProcessStatus.WARNING
+                ]
+            }
         };
 
         exam.GetByQuery(
@@ -149,7 +160,7 @@ class AggregationController {
      * @param data {Object}
      * @param callback {Function}
      */
-    static update (data, callback) {
+    static update(data, callback) {
         aggregation.Update(AggregationController.data._id, data, callback);
     }
 }
