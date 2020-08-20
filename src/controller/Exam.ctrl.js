@@ -146,9 +146,25 @@ class ExamController {
                 this.image
             ]
         });
+
+        /**
+         * name: FindClippingPoint
+         * depends: DrawImage
+         */
+        this.wM.Push({
+            name: WorkerManager.JobList.FindClippingPoint,
+            job: WorkerManager.JobList.FindClippingPoint,
+            params: [
+                this.canvas,
+                this.context,
+                this.image
+            ],
+            depends: WorkerManager.JobList.DrawImage
+        }); 
+
         /**
          * name: CropImage
-         * depends: DrawImage
+         * depends: FindClippingPoint
          */
         wM.Push({
             name: WorkerManager.JobList.CropImage,
@@ -162,7 +178,7 @@ class ExamController {
                 Config.CropRate['COLUMNS' + this.template.columns].WIDTH,
                 Config.CropRate['COLUMNS' + this.template.columns].HEIGHT
             ],
-            depends: WorkerManager.JobList.DrawImage
+            depends: WorkerManager.JobList.FindClippingPoint
         });
 
         /**
