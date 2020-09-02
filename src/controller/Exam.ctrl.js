@@ -151,7 +151,7 @@ class ExamController {
          * name: FindClippingPoint
          * depends: DrawImage
          */
-        this.wM.Push({
+        wM.Push({
             name: WorkerManager.JobList.FindClippingPoint,
             job: WorkerManager.JobList.FindClippingPoint,
             params: [
