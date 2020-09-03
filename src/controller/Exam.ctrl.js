@@ -276,13 +276,14 @@ class ExamController {
             ],
             depends: WorkerManager.JobList.PrepareCornerDetection
         });
+
         /**
-         * name: FilterCorner
+         * name: FilterResponseCorners
          * depends: DetectCorner
          */
         wM.Push({
-            name: WorkerManager.JobList.FilterCorner,
-            job: WorkerManager.JobList.FilterCorner,
+            name: WorkerManager.JobList.FilterResponseCorners,
+            job: WorkerManager.JobList.FilterResponseCorners,
             params: [
                 this.canvas,
                 this.jsfeat,
@@ -295,7 +296,7 @@ class ExamController {
 
         /**
          * name: ValidateTemplate
-         * depends: FilterCorner
+         * depends: FilterResponseCorners
          */
         wM.Push({
             name: WorkerManager.JobList.ValidateTemplate,
@@ -307,7 +308,7 @@ class ExamController {
                 this.template,
                 Config.TemplateOffset
             ],
-            depends: WorkerManager.JobList.FilterCorner
+            depends: WorkerManager.JobList.FilterResponseCorners
         });
         /**
          * name: DrawGrid
