@@ -146,9 +146,27 @@ class ExamController {
                 this.image
             ]
         });
+
+        /**
+         * name: FindClippingPoint
+         * depends: DrawImage
+         */
+        wM.Push({
+            name: WorkerManager.JobList.FindClippingPoint,
+            job: WorkerManager.JobList.FindClippingPoint,
+            params: [
+                this.canvas,
+                this.context,
+                this.image,
+                Canvas.Image,
+                Config
+            ],
+            depends: WorkerManager.JobList.DrawImage
+        }); 
+
         /**
          * name: CropImage
-         * depends: DrawImage
+         * depends: FindClippingPoint
          */
         wM.Push({
             name: WorkerManager.JobList.CropImage,
@@ -162,7 +180,7 @@ class ExamController {
                 Config.CropRate['COLUMNS' + this.template.columns].WIDTH,
                 Config.CropRate['COLUMNS' + this.template.columns].HEIGHT
             ],
-            depends: WorkerManager.JobList.DrawImage
+            depends: WorkerManager.JobList.FindClippingPoint
         });
 
         /**
@@ -258,13 +276,14 @@ class ExamController {
             ],
             depends: WorkerManager.JobList.PrepareCornerDetection
         });
+
         /**
-         * name: FilterCorner
+         * name: FilterResponseCorners
          * depends: DetectCorner
          */
         wM.Push({
-            name: WorkerManager.JobList.FilterCorner,
-            job: WorkerManager.JobList.FilterCorner,
+            name: WorkerManager.JobList.FilterResponseCorners,
+            job: WorkerManager.JobList.FilterResponseCorners,
             params: [
                 this.canvas,
                 this.jsfeat,
@@ -277,7 +296,7 @@ class ExamController {
 
         /**
          * name: ValidateTemplate
-         * depends: FilterCorner
+         * depends: FilterResponseCorners
          */
         wM.Push({
             name: WorkerManager.JobList.ValidateTemplate,
@@ -289,7 +308,7 @@ class ExamController {
                 this.template,
                 Config.TemplateOffset
             ],
-            depends: WorkerManager.JobList.FilterCorner
+            depends: WorkerManager.JobList.FilterResponseCorners
         });
         /**
          * name: DrawGrid
